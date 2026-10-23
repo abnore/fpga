@@ -1,0 +1,31 @@
+// ============================================================================
+// TANG NANO 9K | ST7789 LCD TEST
+// GW1NR-LV9QN88PC6/I5
+// ============================================================================
+
+// --- CLOCK (27 MHz) -------------------------------------------------------
+IO_LOC  "clk"        52;
+IO_PORT "clk"        IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+// --- RESET BUTTON (ACTIVE LOW) --------------------------------------------
+IO_LOC  "rst_n_in"    4;
+IO_PORT "rst_n_in"    IO_TYPE=LVCMOS18 PULL_MODE=UP;
+
+// --- ST7789 LCD -----------------------------------------------------------
+IO_LOC  "scl"        76; // SPI clock
+IO_PORT "scl"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+
+IO_LOC  "sda"        77; // SPI MOSI
+IO_PORT "sda"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+
+IO_LOC  "rst_n"      47; // LCD hardware reset
+IO_PORT "rst_n"      IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+
+IO_LOC  "rs"         49; // LCD D/C
+IO_PORT "rs"         IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+
+IO_LOC  "cs"         48; // LCD chip select
+IO_PORT "cs"         IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+
+IO_LOC  "debug_led" 10;
+IO_PORT "debug_led" IO_TYPE=LVCMOS18 PULL_MODE=NONE;
