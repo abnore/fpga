@@ -72,9 +72,8 @@ architecture rtl of lcd_st7789 is
         (x"D0", '1'), (x"04", '1'), (x"0C", '1'), (x"11", '1'), (x"13", '1'),
         (x"2C", '1'), (x"3F", '1'), (x"44", '1'), (x"51", '1'), (x"2F", '1'),
         (x"1F", '1'), (x"1F", '1'), (x"20", '1'), (x"23", '1'),
-
         (x"21", '0'), -- display inversion on
-        (x"29", '0'), -- display on, ready for commands
+        (x"29", '0'), -- display on
     );
     signal init_arr_idx, next_arr_idx : natural range 0 to init_seq'length := 0;
 
@@ -94,22 +93,22 @@ begin
         mosi => sda
     );
 
-     process(clk) is
+    process(clk) is
     begin
         if rising_edge(clk) then
             if rst then
-                state       <= RESET_HOLD;
-                r_valid     <= '0';
-                r_dc        <= '0';
-                spi_din     <= (others => '0');
-                counter     <= 0;
+                state        <= RESET_HOLD;
+                r_valid      <= '0';
+                r_dc         <= '0';
+                spi_din      <= (others => '0');
+                counter      <= 0;
                 init_arr_idx <= 0;
             else
-                state   <= next_state;
-                r_valid <= next_valid;
-                r_dc    <= next_dc;
-                spi_din <= next_spi_din;
-                counter <= next_counter;
+                state        <= next_state;
+                r_valid      <= next_valid;
+                r_dc         <= next_dc;
+                spi_din      <= next_spi_din;
+                counter      <= next_counter;
                 init_arr_idx <= next_arr_idx;
 
             end if;
@@ -175,6 +174,7 @@ begin
                 end if;
 
             when WAKE_WAIT =>
+
                 if ready then
                     if (counter = MS_5) then
                         next_state <= INIT;
@@ -197,9 +197,9 @@ begin
                 next_valid <= '0';
 
                 if init_arr_idx = init_seq'length then
-                    if ready then
-                        next_state <= DRIVING;
-                    end if;
+
+                    next_state <= DRIVING if ready;
+
                 elsif ready then
                     if r_valid = '0' then
                         next_spi_din <= init_seq(init_arr_idx).cmd;
@@ -211,9 +211,10 @@ begin
                 end if;
 
             /* Once we have initialized we never leave this state, unless we
-            * reset. I am not supporting software reset for now */
-
+            * reset. I am not supporting software reset for now.
+            * */
             when DRIVING =>
+
                 next_valid      <= '0';
 
                 if ready = '1' and r_valid = '0' then
