@@ -9,9 +9,7 @@ entity lcd_top is
         sda     : out std_logic;
         rst_n   : out std_logic;
         rs      : out std_logic; -- is what the spec calls dc, same pin
-        cs      : out std_logic;
-
-        debug_led : out std_logic
+        cs      : out std_logic
         );
 end entity;
 
@@ -41,15 +39,23 @@ begin
         din   => din,
         dvalid => dvalid,
         dready => dready,
-        ddc   => ddc,
-
-        debug_led => debug_led
+        ddc   => ddc
         );
 
     ddc <= '1'; -- Pixel data, not commands for now
 
     dvalid <= '1' when byte_count < PIXELS * 2 else '0';
-    din <= x"F8" when byte_count mod 2 = 0 else x"00";
+    /* 8.7.11 Write data for 16-bit/pixel (RGB 5-6-5-bit input), 65K-Colors, 3Ah=”05h”
+    * 2 bytes send all the pixel info.
+    * 1. byte RRRRRGGG
+    * 2. byte GGGBBBBB
+    * So red is 11111000 00000000 00F8
+    * while blue is 00000000 00011111 001f
+    * and green is 00000111 11100000 03e0
+    * */
+    --din <= x"F8" when byte_count mod 2 = 0 else x"00"; -- red
+    --din <= x"1f" when byte_count mod 2 = 0 else x"00"; -- blue
+    din <= x"03" when byte_count mod 2 = 0 else x"e0"; -- green
 
     red_generator : process(clk)
     begin

@@ -19,8 +19,6 @@ entity lcd_st7789 is
         dvalid  : in std_logic;
         dready  : out std_logic;
         ddc     : in std_logic;
-
-        debug_led : out std_logic
     );
 end entity;
 
@@ -30,11 +28,9 @@ architecture rtl of lcd_st7789 is
     signal spi_din, next_spi_din : std_logic_vector(7 downto 0) := (others => '0');
     signal ready : std_logic; -- driven by the SPI master
 
-    signal reached_init : std_logic := '0';
-
     constant CYCLES_PER_MS : positive := CLK_FREQ / 1000;
-    constant US_100 : positive := CLK_FREQ / 10_000;
-    constant MS_5 : positive := CYCLES_PER_MS * 120;
+    constant US_10 : positive := CLK_FREQ / 100_000;
+    constant MS_5 : positive := CYCLES_PER_MS * 5;
     constant MS_10 : positive := CYCLES_PER_MS * 10;
     constant MS_100 : positive := CYCLES_PER_MS * 100;
     constant MS_120 : positive := CYCLES_PER_MS * 120;
@@ -53,7 +49,7 @@ architecture rtl of lcd_st7789 is
 
     type init_array is array (natural range <>) of init_cmd;
     -- The sequence assumes we power on or reset, and no interruptions
-    -- We only bother with the ones setting something else then the defaults,
+    -- We only bother with the ones setting something else than the default,
     -- there are many more settings we would do here
     constant init_seq : init_array := (
         (x"11", '0'), -- Sleep out - needs 5ms delay, or 120 delay for sleep in
@@ -88,62 +84,36 @@ architecture rtl of lcd_st7789 is
         (x"a1", '1'), -- setting 3 voltages for internal analog supply
 
         (x"e0", '0'), -- positive voltage gamma control, 14 params
-        (x"D0", '1'),
-        (x"04", '1'),
-        (x"0D", '1'),
-        (x"11", '1'),
-        (x"13", '1'),
-        (x"2B", '1'),
-        (x"3F", '1'),
-        (x"54", '1'),
-        (x"4C", '1'),
-        (x"18", '1'),
-        (x"0D", '1'),
-        (x"0B", '1'),
-        (x"1F", '1'),
-        (x"23", '1'),
+        (x"D0", '1'), (x"04", '1'), (x"0D", '1'), (x"11", '1'), (x"13", '1'),
+        (x"2B", '1'), (x"3F", '1'), (x"54", '1'), (x"4C", '1'), (x"18", '1'),
+        (x"0D", '1'), (x"0B", '1'), (x"1F", '1'), (x"23", '1'),
 
         (x"e1", '0'), -- negative voltage gamma control, 14 params
-        (x"D0", '1'),
-        (x"04", '1'),
-        (x"0C", '1'),
-        (x"11", '1'),
-        (x"13", '1'),
-        (x"2C", '1'),
-        (x"3F", '1'),
-        (x"44", '1'),
-        (x"51", '1'),
-        (x"2F", '1'),
-        (x"1F", '1'),
-        (x"1F", '1'),
-        (x"20", '1'),
-        (x"23", '1'),
+        (x"D0", '1'), (x"04", '1'), (x"0C", '1'), (x"11", '1'), (x"13", '1'),
+        (x"2C", '1'), (x"3F", '1'), (x"44", '1'), (x"51", '1'), (x"2F", '1'),
+        (x"1F", '1'), (x"1F", '1'), (x"20", '1'), (x"23", '1'),
 
         (x"21", '0'), -- display inversion on
         (x"29", '0'),  -- display on
 
-        -- This part is only for testing
-        (x"2A", '0'), -- Column address set
-        (x"00", '1'), -- X start high
+        -- This part is only for testing 2 bytes per coord
+        (x"2A", '0'), -- Column address set 0028 - 0117
+        (x"00", '1'), -- X start high: 0
         (x"28", '1'), -- X start low: 40
-        (x"01", '1'), -- X end high
-        (x"17", '1'), -- X end low: 279
+        (x"01", '1'), -- X end high : 1
+        (x"17", '1'), -- X end low: 279, so 40-279, or 0-239 converted
 
-        (x"2B", '0'), -- Row address set
-        (x"00", '1'), -- Y start high
+        (x"2B", '0'), -- Row address set 0035 - 00bb
+        (x"00", '1'), -- Y start high : 0
         (x"35", '1'), -- Y start low: 53
-        (x"00", '1'), -- Y end high
-        (x"bb", '1'), -- Y end low: 187
+        (x"00", '1'), -- Y end high : 0
+        (x"bb", '1'), -- Y end low: 187, so 53 - 187 or 0-134 converted
 
         (x"2C", '0')  -- Memory write
     );
     signal init_arr_idx, next_arr_idx : natural range 0 to init_seq'length := 0;
 
 begin
-
-    --debug_led <= '0' when state = INIT else '1';
-    debug_led <= not reached_init;
-
     -- Drive the dc signal
     rs <= r_dc;
 
@@ -169,7 +139,6 @@ begin
                 spi_din     <= (others => '0');
                 counter     <= 0;
                 init_arr_idx <= 0;
-                reached_init <= '0';
             else
                 state   <= next_state;
                 r_valid <= next_valid;
@@ -178,9 +147,6 @@ begin
                 counter <= next_counter;
                 init_arr_idx <= next_arr_idx;
 
-                if state = DRIVING then
-                    reached_init <= '1';
-                end if;
             end if;
         end if;
     end process;
@@ -201,24 +167,24 @@ begin
 
         case state is
             /* Here we are sending a hardware reset, cleared all registers and
-            * we need to hold rst_n low for at least 10us, i choose 100us.
+            * we need to hold rst_n low for at least 10us.
             * */
             when RESET_HOLD =>
 
                 rst_n <= '0'; -- hold reset down for 100us
 
-                if (counter = MS_100) then
+                if (counter = US_10) then
                     next_state <= RESET_WAIT;
                 else
                     next_counter <= counter + 1;
                 end if;
 
             /* Here we need to wait a minimum of 120ms before we send the first
-            * command, which is going to be sleep out, we are waiting 150ms
+            * command, which is going to be sleep out
             * */
             when RESET_WAIT =>
 
-                if (counter = MS_200) then
+                if (counter = MS_120) then
                     next_state <= WAKE;
                 else
                     next_counter <= counter + 1;
@@ -245,7 +211,7 @@ begin
 
             when WAKE_WAIT =>
                 if ready then
-                    if (counter = MS_120) then
+                    if (counter = MS_5) then
                         next_state <= INIT;
                     else
                         next_counter <= counter + 1;
@@ -254,24 +220,28 @@ begin
 
 
             /* Here we cycle through all the commands and parameters, sending
-            * one byte at a time through the spi interface */
+            * one byte at a time through the spi interface. Here we had a bug.
+            * It is important not to cycle through while we are waiting for the
+            * spi to stream over the bits. Therefore we prepare the next byte
+            * while the data isnt valid, and when it is we toggle the array.
+            * When data is valid while ready, it means the data is captured
+            * and we are in a prepare/hold state
+            * */
             when INIT =>
+
+                next_valid <= '0';
 
                 if init_arr_idx = init_seq'length then
                     if ready then
                         next_state <= DRIVING;
                     end if;
-                else
-                    if ready then
+                elsif ready then
+                    if r_valid = '0' then
                         next_spi_din <= init_seq(init_arr_idx).cmd;
                         next_dc      <= init_seq(init_arr_idx).dc;
                         next_valid   <= '1';
                     else
-                        next_valid <= '0';
-
-                        if (init_arr_idx < init_seq'length) then
-                            next_arr_idx <= init_arr_idx + 1;
-                        end if;
+                        next_arr_idx <= init_arr_idx + 1;
                     end if;
                 end if;
 
@@ -279,13 +249,13 @@ begin
             * reset. I am not supporting software reset for now */
 
             when DRIVING =>
+                next_valid      <= '0';
+
                 if ready = '1' and r_valid = '0' then
                     dready          <= '1';
                     next_spi_din    <= din;
                     next_dc         <= ddc;
                     next_valid      <= dvalid;
-                else
-                    next_valid      <= '0';
                 end if;
 
         end case;
