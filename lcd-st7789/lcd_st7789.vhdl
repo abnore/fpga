@@ -73,7 +73,7 @@ architecture rtl of lcd_st7789 is
         (x"2C", '1'), (x"3F", '1'), (x"44", '1'), (x"51", '1'), (x"2F", '1'),
         (x"1F", '1'), (x"1F", '1'), (x"20", '1'), (x"23", '1'),
         (x"21", '0'), -- display inversion on
-        (x"29", '0'), -- display on
+        (x"29", '0') -- display on
     );
     signal init_arr_idx, next_arr_idx : natural range 0 to init_seq'length := 0;
 
@@ -197,8 +197,7 @@ begin
                 next_valid <= '0';
 
                 if init_arr_idx = init_seq'length then
-
-                    next_state <= DRIVING if ready;
+                    next_state <= DRIVING when ready;
 
                 elsif ready then
                     if r_valid = '0' then
