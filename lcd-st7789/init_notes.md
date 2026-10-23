@@ -14,24 +14,24 @@ There are 19 commands in the example, 18 in the array, and first
 
  then all of the commands in the array in this order with the parameters
 
-0x36 - Memory data access control
-0x3A - Interface pixel format
-0xB2 - Porch control
-0xB7 - Gate Control
-0xBB - VCOMS setting
-0xC0 - LCM control
-0xC2 - VDV and VRH Command Enable
-0xC3 - VRH Set
-0xC4 - VDV Setting
-0xC6 - FR Control
-0xD0 - Power Control 1
-0xE0 - Positive Voltage Gamma Control
-0xE1 - Negative Voltage Gamma Control
-0x21 - Display inversion on
-0x29 - Display on    (0x28 is display off for future reference)
-0x2A - Column address set
-0x2B - Row address set
-0x2C - Memory write
+- 0x36 - Memory data access control
+- 0x3A - Interface pixel format
+- 0xB2 - Porch control
+- 0xB7 - Gate Control
+- 0xBB - VCOMS setting
+- 0xC0 - LCM control
+- 0xC2 - VDV and VRH Command Enable
+- 0xC3 - VRH Set
+- 0xC4 - VDV Setting
+- 0xC6 - FR Control
+- 0xD0 - Power Control 1
+- 0xE0 - Positive Voltage Gamma Control
+- 0xE1 - Negative Voltage Gamma Control
+- 0x21 - Display inversion on
+- 0x29 - Display on    (0x28 is display off for future reference)
+- 0x2A - Column address set
+- 0x2B - Row address set
+- 0x2C - Memory write
 
 And then we write all the pixels to the screen by setting cs to 0 and rs to 1
 and then just giving the output
@@ -151,7 +151,8 @@ turn it off, write to the screen or just keep it on
 ## Writing to the screen
 
 Here we need three commands, and the example shows us how its done
-first we say which column, then row and then we say start. That it is.
+first we say which column, then row and then we say start. 
+That is it!
 
 row and column takes 4 parameter, and start is a single command
 
