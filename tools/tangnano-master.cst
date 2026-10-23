@@ -1,0 +1,172 @@
+// ============================================================================
+// TANG NANO 9K | MASTER PIN CONSTRAINTS
+// GW1NR-LV9QN88PC6/I5
+// ============================================================================
+// Uncomment both lines of a pin and rename both ports to match your RTL.
+// Keep IO_LOC and IO_PORT on separate lines for nextpnr compatibility.
+// IO_LOC = FPGA package pin; j5_01 = connector J5, position 1.
+// Each user pin appears once. Shared functions are labelled beside the pin.
+// Fixed bank voltages: 3.3 V / 1.8 V as listed. FPGA I/O is NOT 5 V tolerant.
+// Shared pins remain wired to onboard circuits; avoid conflicting accessories.
+// Source: Sipeed Tang_Nano_9k_3672_Schematic.pdf (revision history 6202).
+
+// --- CLOCK ----------------------------------------------------------------
+// 27 MHz oscillator; input only.
+// IO_LOC  "clk"          52;
+// IO_PORT "clk"          IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+// --- LEDS -----------------------------------------------------------------
+// Active LOW; 1.8 V.
+// IO_LOC  "led[0]"       10;
+// IO_PORT "led[0]"       IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "led[1]"       11;
+// IO_PORT "led[1]"       IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "led[2]"       13;
+// IO_PORT "led[2]"       IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "led[3]"       14;
+// IO_PORT "led[3]"       IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "led[4]"       15;
+// IO_PORT "led[4]"       IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "led[5]"       16;
+// IO_PORT "led[5]"       IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+
+// --- BUTTONS --------------------------------------------------------------
+// Active LOW; 1.8 V. S1/S2 labels vary by revision.
+// IO_LOC  "button_n"      3;
+// IO_PORT "button_n"     IO_TYPE=LVCMOS18 PULL_MODE=UP;
+// IO_LOC  "reset_n"       4; // Also configuration/JTAG select
+// IO_PORT "reset_n"      IO_TYPE=LVCMOS18 PULL_MODE=UP;
+
+// --- USB-UART -------------------------------------------------------------
+// TX/RX directions are from the FPGA viewpoint.
+// IO_LOC  "uart_tx"      17; // FPGA -> USB bridge
+// IO_PORT "uart_tx"      IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "uart_rx"      18; // USB bridge -> FPGA
+// IO_PORT "uart_rx"      IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+// --- SPI FLASH ------------------------------------------------------------
+// Enable user MSPI pins in the tool/packing configuration.
+// IO_LOC  "flash_clk"    59;
+// IO_PORT "flash_clk"    IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "flash_cs_n"   60;
+// IO_PORT "flash_cs_n"   IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "flash_mosi"   61;
+// IO_PORT "flash_mosi"   IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// IO_LOC  "flash_miso"   62;
+// IO_PORT "flash_miso"   IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+// --- LCD CONNECTORS -------------------------------------------------------
+// Signals not present on J5/J6; remaining LCD signals are listed under the headers.
+// IO_LOC  "lcd_resetn"   47; // P2.3: SPI LCD reset
+// IO_PORT "lcd_resetn"   IO_TYPE=LVCMOS33 PULL_MODE=UP DRIVE=8;
+// IO_LOC  "touch_yu"     50; // J4.40: touch YU; digital I/O, not an ADC input
+// IO_PORT "touch_yu"     IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+
+// --- J5 | GPIO HEADER -----------------------------------------------------
+// All 24 positions are 3.3 V GPIOs; shared functions shown at right.
+// SD pins: leave card slot empty when using them as GPIO.
+// IO_LOC  "j5_01"        38; // 3.3 V; SD CS
+// IO_PORT "j5_01"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_02"        37; // 3.3 V; SD MOSI
+// IO_PORT "j5_02"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_03"        36; // 3.3 V; SD clock
+// IO_PORT "j5_03"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_04"        39; // 3.3 V; SD MISO
+// IO_PORT "j5_04"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_05"        25; // 3.3 V; general GPIO
+// IO_PORT "j5_05"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_06"        26; // 3.3 V; general GPIO
+// IO_PORT "j5_06"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_07"        27; // 3.3 V; general GPIO
+// IO_PORT "j5_07"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_08"        28; // 3.3 V; general GPIO
+// IO_PORT "j5_08"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_09"        29; // 3.3 V; general GPIO
+// IO_PORT "j5_09"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_10"        30; // 3.3 V; general GPIO
+// IO_PORT "j5_10"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_11"        33; // 3.3 V; RGB DE
+// IO_PORT "j5_11"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_12"        34; // 3.3 V; RGB VSYNC
+// IO_PORT "j5_12"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_13"        40; // 3.3 V; RGB HSYNC
+// IO_PORT "j5_13"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_14"        35; // 3.3 V; RGB clock
+// IO_PORT "j5_14"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_15"        41; // 3.3 V; RGB B7
+// IO_PORT "j5_15"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_16"        42; // 3.3 V; RGB B6
+// IO_PORT "j5_16"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_17"        51; // 3.3 V; RGB B5
+// IO_PORT "j5_17"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_18"        53; // 3.3 V; RGB B4
+// IO_PORT "j5_18"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_19"        54; // 3.3 V; RGB B3
+// IO_PORT "j5_19"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_20"        55; // 3.3 V; RGB G7
+// IO_PORT "j5_20"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_21"        56; // 3.3 V; RGB G6
+// IO_PORT "j5_21"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_22"        57; // 3.3 V; RGB G5
+// IO_PORT "j5_22"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_23"        68; // 3.3 V; RGB G4 / HDMI clock N
+// IO_PORT "j5_23"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j5_24"        69; // 3.3 V; RGB G3 / HDMI clock P
+// IO_PORT "j5_24"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+
+// --- J6 | GPIO HEADER -----------------------------------------------------
+// Mixed 3.3 V / 1.8 V GPIOs and power pins; positions follow schematic numbering.
+// J6.02..09 are 1.8 V. HDMI pins have onboard loading/pull-ups.
+// IO_LOC  "j6_01"        63; // 3.3 V; J4 touch XL
+// IO_PORT "j6_01"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_02"        86; // 1.8 V; RGB backlight EN/PWM
+// IO_PORT "j6_02"        IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "j6_03"        85; // 1.8 V; general GPIO
+// IO_PORT "j6_03"        IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "j6_04"        84; // 1.8 V; general GPIO
+// IO_PORT "j6_04"        IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "j6_05"        83; // 1.8 V; general GPIO
+// IO_PORT "j6_05"        IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "j6_06"        82; // 1.8 V; general GPIO
+// IO_PORT "j6_06"        IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "j6_07"        81; // 1.8 V; general GPIO
+// IO_PORT "j6_07"        IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "j6_08"        80; // 1.8 V; general GPIO
+// IO_PORT "j6_08"        IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "j6_09"        79; // 1.8 V; general GPIO
+// IO_PORT "j6_09"        IO_TYPE=LVCMOS18 PULL_MODE=NONE;
+// IO_LOC  "j6_10"        77; // 3.3 V; SPI LCD MOSI
+// IO_PORT "j6_10"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_11"        76; // 3.3 V; SPI LCD clock
+// IO_PORT "j6_11"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_12"        75; // 3.3 V; RGB R3 / HDMI D2 P
+// IO_PORT "j6_12"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_13"        74; // 3.3 V; RGB R4 / HDMI D2 N
+// IO_PORT "j6_13"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_14"        73; // 3.3 V; RGB R5 / HDMI D1 P
+// IO_PORT "j6_14"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_15"        72; // 3.3 V; RGB R6 / HDMI D1 N
+// IO_PORT "j6_15"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_16"        71; // 3.3 V; RGB R7 / HDMI D0 P
+// IO_PORT "j6_16"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_17"        70; // 3.3 V; RGB G2 / HDMI D0 N
+// IO_PORT "j6_17"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// J6.18: +5 V (power, NOT GPIO)
+// IO_LOC  "j6_19"        48; // 3.3 V; SPI LCD CS
+// IO_PORT "j6_19"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_20"        49; // 3.3 V; SPI LCD D/C
+// IO_PORT "j6_20"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_21"        31; // 3.3 V; J4 touch YD
+// IO_PORT "j6_21"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// IO_LOC  "j6_22"        32; // 3.3 V; J4 touch XR
+// IO_PORT "j6_22"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+// J6.23: GND (NOT GPIO)
+// J6.24: +3.3 V (power, NOT GPIO)
+
+// --- RESERVED / SPECIAL USE --------------------------------------------------
+// HDMI/TMDS requires differential primitives and matching constraints, not the
+// header GPIO settings above (e.g. LVDS25E for Apicula ELVDS outputs).
+// JTAG 5/6/7/8, RECONFIG_N 9 and MODE1/MODE0 87/88 are reserved for programming/boot.
+// Pins 19/20 have no external user connection shown; power/ground pins are not GPIO.
+// All accessible user signals are above; LCD/SD/HDMI signals on headers are not duplicated.
+

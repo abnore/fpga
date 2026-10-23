@@ -1,0 +1,47 @@
+// ============================================================================
+// TANG NANO 9K | MASTER PIN CONSTRAINTS
+// GW1NR-LV9QN88PC6/I5
+// ============================================================================
+// Uncomment both lines of a pin and rename both ports to match your RTL.
+// Keep IO_LOC and IO_PORT on separate lines for nextpnr compatibility.
+// IO_LOC = FPGA package pin; j5_01 = connector J5, position 1.
+// Each user pin appears once. Shared functions are labelled beside the pin.
+// Fixed bank voltages: 3.3 V / 1.8 V as listed. FPGA I/O is NOT 5 V tolerant.
+// Shared pins remain wired to onboard circuits; avoid conflicting accessories.
+// Source: Sipeed Tang_Nano_9k_3672_Schematic.pdf (revision history 6202).
+
+// --- CLOCK ----------------------------------------------------------------
+// 27 MHz oscillator; input only.
+IO_LOC  "clk"          52;
+IO_PORT "clk"          IO_TYPE=LVCMOS33 PULL_MODE=UP;
+
+// --- BUTTONS --------------------------------------------------------------
+// Active LOW; 1.8 V. S1/S2 labels vary by revision.
+IO_LOC  "btn"      3;
+IO_PORT "btn"     IO_TYPE=LVCMOS18 PULL_MODE=UP;
+IO_LOC  "rst_n"       4; // Also configuration/JTAG select
+IO_PORT "rst_n"      IO_TYPE=LVCMOS18 PULL_MODE=UP;
+
+// --- J5 | GPIO HEADER -----------------------------------------------------
+// All 24 positions are 3.3 V GPIOs; shared functions shown at right.
+// SD pins: leave card slot empty when using them as GPIO.
+
+IO_LOC  "seg[0]"        56; // 3.3 V; RGB G6
+IO_PORT "seg[0]"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+IO_LOC  "seg[1]"        57; // 3.3 V; RGB G5
+IO_PORT "seg[1]"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+IO_LOC  "seg[5]"        68; // 3.3 V; RGB G4 / HDMI clock N
+IO_PORT "seg[5]"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+IO_LOC  "seg[6]"        69; // 3.3 V; RGB G3 / HDMI clock P
+IO_PORT "seg[6]"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+
+// --- J6 | GPIO HEADER -----------------------------------------------------
+// Mixed 3.3 V / 1.8 V GPIOs and power pins; positions follow schematic numbering.
+// J6.02..09 are 1.8 V. HDMI pins have onboard loading/pull-ups.
+
+IO_LOC  "seg[2]"        49; // 3.3 V; SPI LCD D/C
+IO_PORT "seg[2]"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+IO_LOC  "seg[3]"        31; // 3.3 V; J4 touch YD
+IO_PORT "seg[3]"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
+IO_LOC  "seg[4]"        32; // 3.3 V; J4 touch XR
+IO_PORT "seg[4]"        IO_TYPE=LVCMOS33 PULL_MODE=NONE;
