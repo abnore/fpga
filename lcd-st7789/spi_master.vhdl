@@ -47,12 +47,18 @@ begin
                 r_mosi <= '0';
                 r_sck  <= '0';
                 r_cnt  <= 0;
+                cs <= '1';
             else
                 state  <= next_state;
                 data   <= next_data;
                 r_mosi <= r_next_mosi;
                 r_sck  <= r_next_sck;
                 r_cnt  <= r_next_cnt;
+
+                if state = IDLE and valid = '1' then
+                    cs <= '0';
+                end if;
+
             end if;
         end if;
     end process;
@@ -109,6 +115,6 @@ begin
     mosi  <= r_mosi;
     sck   <= r_sck;
     ready <= '1' when state = IDLE else '0';
-    cs    <= '1' when state = IDLE else '0';
+    --cs    <= '1' when state = IDLE else '0';
 
 end architecture;
