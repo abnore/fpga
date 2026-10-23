@@ -61,55 +61,20 @@ architecture rtl of lcd_st7789 is
         (x"19", '1'), -- setting to 0.725V
         (x"c3", '0'), -- VRH setting
         (x"12", '1'), -- 4.45 V -/+
-
-        -- (x"b2", '0'), -- Porch control
-        -- (x"0c", '1'),
-        -- (x"0c", '1'),
-        -- (x"00", '1'),
-        -- (x"33", '1'),
-        -- (x"33", '1'),
-        -- (x"b7", '0'), -- Gate control
-        -- (x"35", '1'),
-        -- (x"c0", '0'), -- LCM control
-        -- (x"2c", '1'),
-        -- (x"c2", '0'), -- VDV and VRH command enable
-        -- (x"01", '1'),
-        -- (x"c4", '0'), -- VDV setting
-        -- (x"20", '1'),
-        -- (x"c6", '0'), -- Frame rate control
-        -- (x"0f", '1'),
-
         (x"d0", '0'), -- Power control 1
         (x"a4", '1'), -- mandatory preset param
         (x"a1", '1'), -- setting 3 voltages for internal analog supply
-
         (x"e0", '0'), -- positive voltage gamma control, 14 params
         (x"D0", '1'), (x"04", '1'), (x"0D", '1'), (x"11", '1'), (x"13", '1'),
         (x"2B", '1'), (x"3F", '1'), (x"54", '1'), (x"4C", '1'), (x"18", '1'),
         (x"0D", '1'), (x"0B", '1'), (x"1F", '1'), (x"23", '1'),
-
         (x"e1", '0'), -- negative voltage gamma control, 14 params
         (x"D0", '1'), (x"04", '1'), (x"0C", '1'), (x"11", '1'), (x"13", '1'),
         (x"2C", '1'), (x"3F", '1'), (x"44", '1'), (x"51", '1'), (x"2F", '1'),
         (x"1F", '1'), (x"1F", '1'), (x"20", '1'), (x"23", '1'),
 
         (x"21", '0'), -- display inversion on
-        (x"29", '0'),  -- display on
-
-        -- This part is only for testing 2 bytes per coord
-        (x"2A", '0'), -- Column address set 0028 - 0117
-        (x"00", '1'), -- X start high: 0
-        (x"28", '1'), -- X start low: 40
-        (x"01", '1'), -- X end high : 1
-        (x"17", '1'), -- X end low: 279, so 40-279, or 0-239 converted
-
-        (x"2B", '0'), -- Row address set 0035 - 00bb
-        (x"00", '1'), -- Y start high : 0
-        (x"35", '1'), -- Y start low: 53
-        (x"00", '1'), -- Y end high : 0
-        (x"bb", '1'), -- Y end low: 187, so 53 - 187 or 0-134 converted
-
-        (x"2C", '0')  -- Memory write
+        (x"29", '0'), -- display on, ready for commands
     );
     signal init_arr_idx, next_arr_idx : natural range 0 to init_seq'length := 0;
 
